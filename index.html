@@ -2411,19 +2411,34 @@
             // 显示弹窗
             dialog.showModal();
 
-            // Safari 兼容性修复
+            // Safari/Mac/iOS 兼容性修复
             if (isSafari()) {
                 setTimeout(() => {
+                    // 使用 inset 而不是 width/height，避免 viewport 计算问题
                     dialog.style.position = 'fixed';
-                    dialog.style.top = '0';
-                    dialog.style.left = '0';
-                    dialog.style.width = '100vw';
-                    dialog.style.height = '100vh';
+                    dialog.style.inset = '0';
                     dialog.style.margin = '0';
                     dialog.style.padding = '0';
                     dialog.style.border = 'none';
                     dialog.style.outline = 'none';
                     dialog.style.zIndex = '10001';
+
+                    // 确保内容区域正确布局
+                    const content = dialog.querySelector('.chapter-modal-content');
+                    if (content) {
+                        content.style.position = 'absolute';
+                        content.style.inset = '0';
+                        content.style.display = 'flex';
+                        content.style.flexDirection = 'column';
+                    }
+
+                    // 确保滚动区域正确设置
+                    const scrollArea = dialog.querySelector('.modal-chapter-content');
+                    if (scrollArea) {
+                        scrollArea.style.flex = '1 1 auto';
+                        scrollArea.style.minHeight = '0';
+                        scrollArea.style.webkitOverflowScrolling = 'touch';
+                    }
                 }, 10);
             }
 
